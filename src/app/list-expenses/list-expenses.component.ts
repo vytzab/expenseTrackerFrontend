@@ -1,17 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-export class Todo {
-  constructor(
-    public id : number,
-    public name : string,
-    public description : string,
-    public amount : number,
-    public category : string,
-    public date : Date,
-    public createdAt : Date,
-    public updatedAt : Date   
-  ) {}
-}
+import { Router } from '@angular/router';
+import { ExpenseDataService } from '../service/data/expense-data.service';
 
 @Component({
   selector: 'app-list-expenses',
@@ -20,26 +9,57 @@ export class Todo {
 })
 export class ListExpensesComponent implements OnInit {
 
-  expenses = [
-    new Todo( 1, 'Olive oil', 'Olive oil', 1, 'Groceries', new Date(), new Date(), new Date() ),
-    new Todo( 2, 'Chicken', 'Chicken', 2, 'Groceries', new Date(), new Date(), new Date() ),
-    new Todo( 3, 'Bread', 'Bread', 3, 'Groceries', new Date(), new Date(), new Date() )
-  ]
+  expenses: Expense[] = [];
+  message: string = '';
 
-  // expense = {
-  //   id : 1,
-  //   name : '',
-  //   description : '',
-	//   amount : 1,
-  //   category : '',
-	//   date : Date.now,
-	//   createdAt : Date.now,
-  //   updatedAt : Date.now    
-  // }
-
-  constructor() { }
+  constructor(
+    private expenseService: ExpenseDataService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+    this.refreshExpenses();
   }
 
+  createExpense() {
+    this.router.navigate(['expenses', -1]);
+  }
+
+  refreshExpenses() {
+    this.expenseService.readAllExpenses().subscribe(
+      response => {
+        console.log(response);
+        this.expenses = response;
+      }
+    )
+  }
+
+  updateExpense(id: number) {
+    console.log(`update Expense ${id}`)
+    this.router.navigate(['expenses', id]);
+  }
+
+  deleteExpense(id: number) {
+    console.log(`delete Expense ${id}`)
+    this.expenseService.deleteExpense(id).subscribe(
+      response => {
+        console.log(response)
+        this.message = `Delete of Expense ${id} Successful!`;
+        this.refreshExpenses();
+      }
+    )
+  }
+}
+
+export class Expense {
+  constructor(
+    public id: number,
+    public name: string,
+    public description: string,
+    public amount: number,
+    public category: string,
+    public date: Date,
+    public createdAt: Date,
+    public updatedAt: Date
+  ) { }
 }

@@ -1,5 +1,7 @@
 <h1>My Expenses</h1>
 
+<div class="alert alert-success" *ngIf='message'> {{ message }}</div>
+
 <div class="container">
     <table class="table">
         <thead>
@@ -11,6 +13,8 @@
                 <th>Date of Expense</th>
                 <th>Expense Record Created</th>
                 <th>Expense Record Updated</th>
+                <th>Update</th>
+                <th>Delete</th>
             </tr>
         </thead>
 
@@ -23,7 +27,11 @@
                 <td>{{ expense.date | date | uppercase}}</td>
                 <td>{{ expense.createdAt | date | uppercase}}</td>
                 <td>{{ expense.updatedAt | date | uppercase}}</td>
+                <td><button (click)="updateExpense(expense.id)" class="btn btn-success">Update</button></td>
+                <td><button (click)="deleteExpense(expense.id)" class="btn btn-warning">Delete</button></td>
             </tr>
         </tbody>
     </table>
+
+    <button (click)="createExpense()" class="btn btn-success">Add an expense</button>
 </div>
