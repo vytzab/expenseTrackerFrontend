@@ -16,14 +16,16 @@ export class AuthenticationService {
     return this.http.post<AuthenticationBean>(`${API_URL}/login`, {
       email: email,
       password: password
-    }).subscribe(
-      data => {
-        sessionStorage.setItem(AUTHENTICATED_USER, email);
-        // console.log('email= ' + email)
-        sessionStorage.setItem(TOKEN, `Bearer ${data.jwtToken}`);
-        // console.log('token= ' + data.jwtToken)
-        return data;
-      }
+    }).pipe(
+      map(
+        data => {
+          sessionStorage.setItem(AUTHENTICATED_USER, email);
+          // console.log('email= ' + email)
+          sessionStorage.setItem(TOKEN, `Bearer ${data.jwtToken}`);
+          // console.log('token= ' + data.jwtToken)
+          return data;
+        }
+      )
     );
   }
 
